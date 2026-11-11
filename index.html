@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kreato - AI Creative Assistant</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">Kreato<span>.</span></div>
+        <div class="nav-label">AI Creative Studio</div>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <span class="tag">YOUR AI CREATIVE PARTNER</span>
+
+            <h1>Turn your ideas into <span>creative content.</span></h1>
+
+            <p>
+                Generate engaging content for your social media,
+                videos and blogs with the power of AI.
+            </p>
+        </section>
+
+        <section class="generator">
+
+            <h2>Create something amazing</h2>
+            <p class="subtitle">Tell Kreato what you want to create.</p>
+
+            <label for="contentType">Content Type</label>
+
+            <select id="contentType">
+                <option value="Instagram Post">Instagram Post</option>
+                <option value="Instagram Reel Script">Instagram Reel Script</option>
+                <option value="YouTube Video Script">YouTube Video Script</option>
+                <option value="YouTube Description">YouTube Description</option>
+                <option value="Blog Article">Blog Article</option>
+                <option value="Creative Ideas">Creative Ideas</option>
+            </select>
+
+            <label for="topic">Your Topic</label>
+
+            <textarea
+                id="topic"
+                placeholder="Example: 5 interesting facts about football..."
+                rows="3"
+            ></textarea>
+
+            <label for="tone">Writing Tone</label>
+
+            <select id="tone">
+                <option value="Creative">Creative</option>
+                <option value="Professional">Professional</option>
+                <option value="Casual">Casual</option>
+                <option value="Funny">Funny</option>
+                <option value="Informative">Informative</option>
+            </select>
+
+            <label for="audience">Target Audience</label>
+
+            <input
+                type="text"
+                id="audience"
+                placeholder="Example: Football fans, students, creators..."
+            >
+
+            <button id="generateBtn" onclick="generateContent()">
+                Generate Content ✨
+            </button>
+
+        </section>
+
+        <section class="result-section">
+
+           
+<h2>Your Generated Content</h2>
+
+<div id="result" class="result-box">
+    <p>Your AI-generated content will appear here.</p>
+</div>
+
+<div class="result-actions">
+    <button id="copyBtn" onclick="copyContent()">
+        Copy Content
+    </button>
+
+    <button id="downloadBtn" onclick="downloadContent()">
+        Download Content
+    </button>
+
+    <button id="regenerateBtn" onclick="regenerateContent()">
+    Regenerate Content ↻
+</button>
+
+
+</div>
+
+        </section>
+     
+
+
+        <!-- Content History Section -->
+        <section class="history-section">
+
+            <h2>Your Content History</h2>
+
+            <p>Access your previously generated content.</p>
+
+            <button onclick="clearHistory()">
+                Clear All History
+            </button>
+
+            <div id="historyList">
+                <p>Your saved content will appear here.</p>
+            </div>
+
+        </section>
+
+
+    </main>
+
+    <footer>
+        Made with Kreato AI
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.0/dist/purify.min.js"></script>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
