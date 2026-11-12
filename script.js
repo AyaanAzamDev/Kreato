@@ -156,14 +156,6 @@ function renderHistory() {
         return;
     }
 
-    const clearButton = document.createElement("button");
-
-    clearButton.textContent = "Clear All History";
-    clearButton.type = "button";
-
-    clearButton.addEventListener("click", clearHistory);
-
-    historyList.appendChild(clearButton);
 
     history.forEach(item => {
 
