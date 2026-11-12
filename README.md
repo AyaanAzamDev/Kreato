@@ -4,6 +4,10 @@ Kreato is an AI-powered creative content assistant that helps users generate eng
 
 Our goal is to make content creation easier, faster and more accessible for students, bloggers and digital content creators.
 
+## 🚀 Live Demo
+
+Try Kreato here: https://kreato-rkmn.onrender.com
+
 ## Features
 
 - AI-powered content generation.
@@ -36,6 +40,7 @@ Our goal is to make content creation easier, faster and more accessible for stud
 | DOMPurify | HTML sanitization |
 | localStorage | Content history |
 | Git & GitHub | Version control |
+| Render | Deployment |
 
 ## How to Run Locally
 
@@ -70,7 +75,7 @@ Replace `your_gemini_api_key` with your own Google Gemini API key.
 ### 5. Start the server
 
 ```bash
-node server.js
+npm start
 ```
 
 ### 6. Open Kreato
@@ -91,7 +96,7 @@ Kreato/
 ├── package.json
 ├── package-lock.json
 ├── .gitignore
-└── .env
+└── README.md
 ```
 
 Note: `.env` and `node_modules` are excluded from GitHub.
@@ -104,9 +109,9 @@ Further improvements are planned, including enhanced AI-assisted editing, additi
 
 ## Team
 
-Team Name: CodeCatalyst
+**Team Name:** CodeCatalyst
 
-Project: Kreato
+**Project:** Kreato
 
 ## Repository
 
@@ -114,4 +119,4 @@ https://github.com/AyaanAzamDev/Kreato
 
 ---
 
-Kreato – Turning Ideas into Content with AI.
+*Kreato – Turning Ideas into Content with AI.*
