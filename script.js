@@ -4,26 +4,167 @@
 // ========================================
 
 const HISTORY_KEY = "kreatoContentHistory";
+let currentFinalContent = "";
 
 // ========================================
 // MARKDOWN RENDERING
 // ========================================
 
 function renderMarkdown(content) {
-    const cleanContent = content.replace(
-        /\\([*_#`~>-])/g,
-        "$1"
-    );
+    currentFinalContent = content || "";
 
     document.getElementById("result").innerHTML =
-        DOMPurify.sanitize(marked.parse(cleanContent));
+        DOMPurify.sanitize(marked.parse(content || ""));
+}
+
+// ========================================
+// DISPLAY AI COMPARISON RESULTS
+// ========================================
+
+function renderComparison(data) {
+    const result = document.getElementById("result");
+
+    result.replaceChildren();
+
+    // AI Model Comparison Heading
+    const comparisonHeading = document.createElement("h2");
+    comparisonHeading.textContent = "AI Model Comparison";
+    result.appendChild(comparisonHeading);
+
+    // Comparison Table
+    const tableWrapper = document.createElement("div");
+    tableWrapper.className = "comparison-table-wrapper";
+
+    const table = document.createElement("table");
+    table.className = "comparison-table";
+
+    // Table Header
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+
+    data.responses.forEach((item) => {
+        const th = document.createElement("th");
+        th.textContent = item.provider;
+        headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Table Body
+    const tbody = document.createElement("tbody");
+    const contentRow = document.createElement("tr");
+
+    data.responses.forEach((item) => {
+        const td = document.createElement("td");
+
+        if (item.success && item.content) {
+            td.innerHTML = DOMPurify.sanitize(
+                marked.parse(item.content)
+            );
+        } else {
+            td.textContent =
+                item.error || "Generation failed";
+        }
+
+        contentRow.appendChild(td);
+    });
+
+    tbody.appendChild(contentRow);
+    table.appendChild(tbody);
+
+    tableWrapper.appendChild(table);
+    result.appendChild(tableWrapper);
+
+    // ========================================
+    // AI EVALUATION SCORES
+    // ========================================
+
+    if (data.evaluation?.scores?.length) {
+
+        const evaluationHeading = document.createElement("h2");
+        evaluationHeading.textContent = "AI Evaluation Scores";
+        result.appendChild(evaluationHeading);
+
+        data.evaluation.scores.forEach((score) => {
+
+            const scoreCard = document.createElement("div");
+            scoreCard.className = "score-card";
+
+            const providerHeading = document.createElement("h3");
+            providerHeading.textContent = score.provider;
+
+            scoreCard.appendChild(providerHeading);
+
+            const categories = [
+                ["Creativity", score.creativity],
+                ["Relevance", score.relevance],
+                ["Engagement", score.engagement],
+                ["Tone", score.tone],
+                ["Structure", score.structure]
+            ];
+
+            categories.forEach(([label, value]) => {
+                const paragraph = document.createElement("p");
+                paragraph.textContent = `${label}: ${value}/10`;
+                scoreCard.appendChild(paragraph);
+            });
+
+            const totalHeading = document.createElement("h3");
+            totalHeading.textContent = `Total: ${score.total}/10`;
+            scoreCard.appendChild(totalHeading);
+
+            const reason = document.createElement("p");
+            reason.textContent = score.reason || "";
+            scoreCard.appendChild(reason);
+
+            result.appendChild(scoreCard);
+        });
+    }
+
+    // ========================================
+    // FINAL OPTIMIZED CONTENT
+    // ========================================
+
+    const finalContent = data.finalContent ||
+        data.responses.find(item => item.success)?.content;
+
+    currentFinalContent = finalContent || "";
+
+    if (finalContent) {
+
+        const finalHeading = document.createElement("h2");
+        finalHeading.textContent =
+            "Kreato's Final Optimized Content";
+
+        result.appendChild(finalHeading);
+
+        const finalBox = document.createElement("div");
+        finalBox.className = "final-content";
+
+        finalBox.innerHTML = DOMPurify.sanitize(
+            marked.parse(finalContent)
+        );
+
+        result.appendChild(finalBox);
+
+        return finalContent;
+    }
+
+    result.appendChild(
+        document.createTextNode(
+            "No AI provider generated content successfully."
+        )
+    );
+
+    return "";
 }
 
 // ========================================
 // GENERATE CONTENT
 // ========================================
 
-async function generateContent() {
+async function generateContent(remarks = "") {
 
     const topic = document.getElementById("topic").value.trim();
     const contentType = document.getElementById("contentType").value;
@@ -33,57 +174,62 @@ async function generateContent() {
     const result = document.getElementById("result");
     const button = document.getElementById("generateBtn");
 
-    if (topic === "") {
+    if (!topic) {
         result.innerText = "Please enter a topic first!";
         return;
     }
 
     button.disabled = true;
-    button.innerText = "Kreato is thinking...";
+    button.innerText = "Comparing AI Models...";
 
-    result.innerText = "Creating your content. Please wait...";
+    result.innerText =
+        "Kreato is generating and evaluating responses from three AI models. Please wait...";
+
+    currentFinalContent = "";
 
     try {
 
-        const response = await fetch("/api/generate", {
+        const response = await fetch("/api/compare", {
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json"
             },
-
             body: JSON.stringify({
-                topic: topic,
-                contentType: contentType,
-                tone: tone,
-                audience: audience
+                topic,
+                contentType,
+                tone,
+                audience,
+                remarks
             })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || "Generation failed");
+            throw new Error(data.error || "Comparison failed");
         }
 
-        // Display generated content
-        renderMarkdown(data.content);
+        const finalContent = renderComparison(data);
 
-        // Automatically save to history
-        saveToHistory({
-            topic: topic,
-            contentType: contentType,
-            tone: tone,
-            audience: audience,
-            content: data.content
-        });
+        if (finalContent) {
+            saveToHistory({
+                topic,
+                contentType,
+                tone,
+                audience,
+                remarks,
+                content: finalContent
+            });
+        }
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Kreato comparison error:", error);
+
+        currentFinalContent = "";
 
         result.innerText =
-            "Sorry! Something went wrong. Please try again.";
+            "Sorry! Kreato could not complete the comparison. Please try again.";
 
     } finally {
 
@@ -103,11 +249,11 @@ function getHistory() {
         return JSON.parse(
             localStorage.getItem(HISTORY_KEY)
         ) || [];
+
     } catch (error) {
         console.error("History loading error:", error);
         return [];
     }
-
 }
 
 function saveToHistory(item) {
@@ -129,7 +275,6 @@ function saveToHistory(item) {
     );
 
     renderHistory();
-
 }
 
 // ========================================
@@ -155,7 +300,6 @@ function renderHistory() {
         historyList.appendChild(emptyMessage);
         return;
     }
-
 
     history.forEach(item => {
 
@@ -198,9 +342,7 @@ function renderHistory() {
         );
 
         historyList.appendChild(card);
-
     });
-
 }
 
 // ========================================
@@ -226,7 +368,6 @@ function viewHistoryItem(id) {
         behavior: "smooth",
         block: "center"
     });
-
 }
 
 // ========================================
@@ -247,7 +388,6 @@ function deleteHistoryItem(id) {
     );
 
     renderHistory();
-
 }
 
 // ========================================
@@ -265,7 +405,6 @@ function clearHistory() {
     localStorage.removeItem(HISTORY_KEY);
 
     renderHistory();
-
 }
 
 // ========================================
@@ -274,26 +413,21 @@ function clearHistory() {
 
 async function copyContent() {
 
-    const result = document.getElementById("result");
-
-    if (!result.innerText.trim() ||
-        result.innerText.includes("Your AI-generated content will appear here.")) {
-
+    if (!currentFinalContent.trim()) {
         alert("Please generate content first!");
         return;
     }
 
     try {
 
-        await navigator.clipboard.writeText(result.innerText);
-        alert("Content copied successfully!");
+        await navigator.clipboard.writeText(currentFinalContent);
+
+        alert("Final content copied successfully!");
 
     } catch (error) {
 
         alert("Unable to copy content. Please try again.");
-
     }
-
 }
 
 // ========================================
@@ -302,16 +436,12 @@ async function copyContent() {
 
 function downloadContent() {
 
-    const result = document.getElementById("result");
-
-    if (!result.innerText.trim() ||
-        result.innerText.includes("Your AI-generated content will appear here.")) {
-
+    if (!currentFinalContent.trim()) {
         alert("Please generate content first!");
         return;
     }
 
-    const blob = new Blob([result.innerText], {
+    const blob = new Blob([currentFinalContent], {
         type: "text/plain"
     });
 
@@ -319,36 +449,106 @@ function downloadContent() {
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = "Kreato-Generated-Content.txt";
+    link.download = "Kreato-Final-Content.txt";
 
     link.click();
 
     URL.revokeObjectURL(url);
-
 }
 
 // ========================================
-// REGENERATE CONTENT
+// REGENERATE CONTENT WITH USER FEEDBACK
 // ========================================
 
-async function regenerateContent() {
+// Show or hide the feedback panel
+function toggleRegenerateOptions() {
 
-    const button = document.getElementById("regenerateBtn");
+    const panel = document.getElementById("regeneratePanel");
 
-    button.disabled = true;
-    button.innerText = "Regenerating...";
+    panel.hidden = !panel.hidden;
+
+    if (!panel.hidden) {
+
+        panel.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+    }
+}
+
+// ========================================
+// REGENERATE WITHOUT REMARKS
+// ========================================
+
+async function regenerateWithoutRemarks() {
+
+    const remarks = document.getElementById("remarks");
+
+    remarks.value = "";
+
+    await runRegeneration("");
+}
+
+// ========================================
+// REGENERATE WITH REMARKS
+// ========================================
+
+async function regenerateWithRemarks() {
+
+    const remarks = document.getElementById("remarks").value.trim();
+
+    if (!remarks) {
+        alert("Please enter your remarks first!");
+        return;
+    }
+
+    await runRegeneration(remarks);
+}
+
+// ========================================
+// COMMON REGENERATION FUNCTION
+// ========================================
+
+async function runRegeneration(remarks) {
+
+    const panel = document.getElementById("regeneratePanel");
+
+    const withoutBtn = document.getElementById(
+        "regenerateWithoutRemarksBtn"
+    );
+
+    const withBtn = document.getElementById(
+        "regenerateWithRemarksBtn"
+    );
+
+    const regenerateBtn = document.getElementById("regenerateBtn");
+
+    if (withoutBtn.disabled || withBtn.disabled) {
+        return;
+    }
+
+    withoutBtn.disabled = true;
+    withBtn.disabled = true;
+
+    if (regenerateBtn) {
+        regenerateBtn.disabled = true;
+    }
+
+    panel.hidden = true;
 
     try {
 
-        await generateContent();
+        await generateContent(remarks);
 
     } finally {
 
-        button.disabled = false;
-        button.innerText = "Regenerate Content ↻";
+        withoutBtn.disabled = false;
+        withBtn.disabled = false;
 
+        if (regenerateBtn) {
+            regenerateBtn.disabled = false;
+        }
     }
-
 }
 
 // ========================================

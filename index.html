@@ -97,9 +97,50 @@
         Download Content
     </button>
 
-    <button id="regenerateBtn" onclick="regenerateContent()">
+    <button id="regenerateBtn" onclick="toggleRegenerateOptions()">
     Regenerate Content ↻
 </button>
+
+<div id="regeneratePanel" class="regenerate-panel" hidden>
+
+    <h3>Improve your content</h3>
+
+    <p>Tell Kreato what you would like to change or add.</p>
+
+    <label for="remarks">Your Remarks (Optional)</label>
+
+    <textarea
+        id="remarks"
+        rows="4"
+        maxlength="1000"
+        placeholder="Example: Add more practical examples, improve the opening hook, include more details..."
+    ></textarea>
+
+    <button
+        type="button"
+        id="regenerateWithoutRemarksBtn"
+        onclick="regenerateWithoutRemarks()"
+    >
+        Regenerate Without Remarks
+    </button>
+
+    <button
+        type="button"
+        id="regenerateWithRemarksBtn"
+        onclick="regenerateWithRemarks()"
+    >
+        Regenerate With Remarks ✨
+    </button>
+
+    <button
+        type="button"
+        class="cancel-regenerate-btn"
+        onclick="toggleRegenerateOptions()"
+    >
+        Cancel
+    </button>
+
+</div>
 
 
 </div>

@@ -40,8 +40,9 @@ body {
 /* Main container */
 
 .container {
-    max-width: 850px;
-    margin: 60px auto;
+    max-width: 1500px;
+    width: 95%;
+    margin: 40px auto;
     padding: 0 20px;
 }
 
@@ -196,7 +197,6 @@ footer {
         padding: 18px 5%;
     }
 }
-<CodeBlock language="css" editable>
 /* Content History */
 
 .history-section {
@@ -230,4 +230,196 @@ footer {
     margin-right: 10px;
     margin-top: 8px;
 }
-</CodeBlock>
+
+/* ========================================
+   KREATO MULTI-AI COMPARISON DASHBOARD
+======================================== */
+
+.comparison-card,
+.score-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 18px 0;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.comparison-card h3,
+.score-card h3 {
+    color: #29245c;
+    margin-bottom: 12px;
+}
+
+.comparison-card small {
+    display: block;
+    margin-top: 15px;
+    color: #777;
+}
+
+.comparison-card table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+}
+
+.comparison-card th,
+.comparison-card td {
+    border: 1px solid #e5e7eb;
+    padding: 9px;
+    text-align: left;
+}
+
+.final-content {
+    background: #f5f3ff;
+    border: 2px solid #8b75df;
+    border-radius: 14px;
+    padding: 24px;
+    margin: 20px 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.final-content h1,
+.final-content h2,
+.final-content h3 {
+    color: #29245c;
+}
+
+.final-content pre {
+    overflow-x: auto;
+}
+
+.final-content img {
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+    .comparison-card,
+    .score-card,
+    .final-content {
+        padding: 14px;
+    }
+}
+/* Side-by-side AI Comparison Table */
+
+.comparison-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.comparison-table {
+    width: 100%;
+    min-width: 1200px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.comparison-table th {
+    background: #635BDB;
+    color: white;
+    padding: 16px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.comparison-table td {
+    width: 33.33%;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    vertical-align: top;
+    line-height: 1.7;
+    overflow-wrap: break-word;
+    word-break: normal;
+    white-space: normal;
+}
+
+.comparison-table td p {
+    margin-bottom: 12px;
+}
+
+.comparison-table td h1,
+.comparison-table td h2,
+.comparison-table td h3 {
+    font-size: 17px;
+    margin: 14px 0;
+    color: #29245c;
+}
+
+/* Tables inside AI-generated responses */
+
+.comparison-table td table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.comparison-table td th,
+.comparison-table td td {
+    padding: 10px;
+    min-width: 100px;
+    border: 1px solid #ddd;
+    word-break: normal;
+}
+
+.comparison-table td ul,
+.comparison-table td ol {
+    padding-left: 22px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+        padding: 0 12px;
+    }
+}
+/* Regenerate With Feedback Panel */
+
+.regenerate-panel {
+    background: #ffffff;
+    padding: 25px;
+    margin-top: 20px;
+    border: 1px solid #e5e1fa;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+.regenerate-panel[hidden] {
+    display: none;
+}
+
+.regenerate-panel h3 {
+    color: #29245c;
+    margin-bottom: 8px;
+}
+
+.regenerate-panel p {
+    color: #777;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.regenerate-panel textarea {
+    margin-bottom: 5px;
+    min-height: 100px;
+}
+
+.regenerate-panel button {
+    margin-top: 12px;
+}
+
+.regenerate-panel .cancel-regenerate-btn {
+    background: #eeeeF5;
+    color: #444;
+}
+
+.regenerate-panel .cancel-regenerate-btn:hover {
+    background: #dedeea;
+}
